@@ -7,7 +7,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :customers, only: [:index]
       resources :subscriptions, only: [:index] 
-      post '/customers/:id/subscriptions', to: 'customer/subscriptions#create'
+      post '/customers/:cust_id/subscriptions', to: 'customer/subscriptions#create'
+      patch '/customers/:cust_id/subscriptions/:sub_id', to: 'customer/subscriptions#update'
     end
   end
 end
