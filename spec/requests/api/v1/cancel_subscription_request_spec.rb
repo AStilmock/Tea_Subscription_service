@@ -12,23 +12,21 @@ RSpec.describe 'Cancel Subscription Request' do
       expect(response.status).to eq(201)
       data = JSON.parse(response.body, symbolize_names: true)
       expect(data).to be_a Hash
-      expect(data).to have_key :"Your subscription has been cancelled"
-      expect(data[:"Your subscription has been cancelled"]).to have_key :subscription
-      expect(data[:"Your subscription has been cancelled"][:subscription]).to be_a Hash
+      expect(data).to eq({ success: "Your subscription has been cancelled" })
+      subscription1.reload
+      expect(subscription1.status).to eq("cancelled")
+      expect(subscription1.frequency).to eq("cancelled")
     end
 
-    it 'gets data from response' do
+    it 'subscription already cancelled' do
       customer1 = Customer.create!(first_name: "Billy", last_name: "Bob", email: "billybobsemail@email.com", address: "123 billy bob lane")
       tea1 = Tea.create!(title: "Bobs and Weaves", description: "A tea that will make you bob and weave", temperature: 200, brew_time: 5)
-      subscription1 = Subscription.create!(customer_id: customer1.id, tea_id: tea1.id, frequency: "Monthly", status: 0)
-
+      subscription1 = Subscription.create!(customer_id: customer1.id, tea_id: tea1.id, frequency: "Monthly", status: 1)
       patch "/api/v1/customers/#{customer1.id}/subscriptions/#{subscription1.id}"
-      data = JSON.parse(response.body, symbolize_names: true)[:"Your subscription has been cancelled"]
-
-      expect(data[:subscription][:customer_id]).to eq customer1.id
-      expect(data[:subscription][:tea_id]).to eq tea1.id
-      expect(data[:subscription][:frequency]).to eq "cancelled"
-      expect(data[:subscription][:status]).to eq "cancelled"
+      expect(response).to_not be_successful
+      expect(response.status).to eq 404
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to eq({:error=>"Subscription already cancelled"})
     end
   end
 end

@@ -22,5 +22,18 @@ RSpec.describe 'View All Customer Subscriptions' do
       expect(data[:"Customer Tea Subscriptions"].first[:frequency]).to eq subscription1.frequency
       expect(data[:"Customer Tea Subscriptions"].first[:status]).to eq subscription1.status
     end
+
+    it 'no subscriptions sad path' do
+      customer1 = Customer.create!(first_name: "Billy", last_name: "Bob", email: "billybobsemail@email.com", address: "123 billy bob lane")
+      tea1 = Tea.create!(title: "Bobs and Weaves", description: "A tea that will make you bob and weave", temperature: 200, brew_time: 5)
+
+      get "/api/v1/customers/#{customer1.id}/subscriptions"
+      expect(response).to_not be_successful
+      expect(response.status).to eq 404
+      expect(customer1.subscriptions).to eq []
+      expect(customer1.subscriptions.count).to eq 0
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data).to eq({:error=>"Customer has no subscriptions"})
+    end
   end
 end

@@ -1,18 +1,29 @@
 class Api::V1::Customer::SubscriptionsController < ApplicationController
   def index
     customer = Customer.find(params[:cust_id])
-    render json: { "Customer Tea Subscriptions": customer.subscriptions }, status: 201
+    if customer.subscriptions == []
+      render json: { error: "Customer has no subscriptions" }, status: 404
+    else
+      render json: { "Customer Tea Subscriptions": customer.subscriptions }, status: 201
+    end
   end
 
   def create
-    subscription = Subscription.create!(customer_id: params[:customer_id], tea_id: params[:tea_id], frequency: "Monthly", status: 0 )
-    render json: { "Subscription Data": { subscription: subscription, customer: subscription.customer, tea: subscription.tea }}, status: 201
+    subscription = Subscription.new(customer_id: params[:customer_id], tea_id: params[:tea_id], frequency: params[:frequency], status: "active" )
+    if subscription.save 
+      render json: { "Subscription Data": { subscription: subscription, customer: subscription.customer, tea: subscription.tea }}, status: 201
+    else
+      render json: { error: "Subscription not created" }, status: 404
+    end
   end
 
   def update
     subscription = Subscription.find(params[:sub_id])
-    subscription.update(status: "cancelled")
-    subscription.update(frequency: "cancelled")
-    render json: { "Your subscription has been cancelled": { subscription: subscription } }, status: 201
+    if subscription.status == "cancelled"
+      render json: { error: "Subscription already cancelled" }, status: 404
+    else
+      subscription.update(status: "cancelled", frequency: "cancelled")
+      render json: { success: "Your subscription has been cancelled" }, status: 201
+    end
   end
 end
