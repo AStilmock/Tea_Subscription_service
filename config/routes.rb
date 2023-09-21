@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       get '/customers/:cust_id/subscriptions', to: 'customer/subscriptions#index'
       post '/customers/:cust_id/subscriptions', to: 'customer/subscriptions#create'
       patch '/customers/:cust_id/subscriptions/:sub_id', to: 'customer/subscriptions#update'
+      # post /graphql, to: 'graphql#execute' 
+      #RESTful vs. Non-RESTful 
     end
   end
 end

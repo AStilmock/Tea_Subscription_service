@@ -101,6 +101,8 @@ GEM
     irb (1.8.1)
       rdoc
       reline (>= 0.3.8)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     launchy (2.5.2)
       addressable (~> 2.8)
     loofah (2.21.3)
@@ -124,7 +126,7 @@ GEM
       net-protocol
     net-protocol (0.2.1)
       timeout
-    net-smtp (0.3.3)
+    net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
     nokogiri (1.15.4-x86_64-darwin)
@@ -232,6 +234,7 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  jsonapi-serializer
   launchy
   orderly
   pg (~> 1.1)
