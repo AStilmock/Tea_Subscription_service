@@ -5,7 +5,7 @@ class Api::V1::Customer::SubscriptionsController < ApplicationController
       render json: { error: "Customer has no subscriptions" }, status: 404
     else
       subs = customer.subscriptions
-      render json: SubscriptionSerializer.new(subs), status: 201
+      render json: SubscriptionSerializer.new(subs), :except => [:created_at, :updated_at], status: 201
     end
   end
 
